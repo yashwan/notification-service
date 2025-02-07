@@ -1,5 +1,6 @@
 const { EMAIL_QUEUE } = require("../Queues");
 const { notificationService } = require("../services");
+const { logger } = require("../utils/nodeMailer");
 const { getChannel } = require("../utils/rabbitmq")
 
 const emailConsumer = async () => {
@@ -10,15 +11,15 @@ const emailConsumer = async () => {
             message = { userGmail, subject, content } = JSON.parse(data.content.toString())
             try{
                 const info = await notificationService.postNotification(message)
-                console.log(`[*] ${info.accepted} is stored in the DB successfully`)
+                logger.info(`[*] ${info.accepted} is stored in the DB successfully`)
             }catch(error){
-                console.log(error.message)
+                logger.error(error.message)
             }
-            console.log(`data consume : ${data.content.toString()}`)
+            logger.info(`data consume : ${data.content.toString()}`)
             channel.ack(data)
         })
     } catch (error) {
-        console.log("error is here", error.message)
+        logger.error("error is here", error.message)
     }
 }
 

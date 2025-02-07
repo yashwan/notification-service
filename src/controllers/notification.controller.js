@@ -1,6 +1,7 @@
 const { StatusCodes } = require("http-status-codes");
 const ApiError = require("../helpers/ApiError");
 const { notificationService } = require("../services");
+const { logger } = require("../utils/nodeMailer");
  
 
 class NotificationController {
@@ -11,7 +12,7 @@ class NotificationController {
                 throw new ApiError("User Not Found", StatusCodes.BAD_REQUEST)
             }
             const info = await notificationService.postNotification({userGmail, content, subject})
-            console.log(info)
+            logger.info(info)
             res.status(StatusCodes.OK).send({
                 message: "Mail sent",
                 error: false,
