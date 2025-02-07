@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "root",
+    "password": "Yashwanth@1556",
+    "database": "flights_development",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "root",
+    "password": "Yashwanth@1556",
+    "database": "flights_test",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": "Yashwanth@1556",
+    "database": "flights_production",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  }
+}

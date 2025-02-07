@@ -1,0 +1,4 @@
+module.exports = {
+    EMAIL_QUEUE: "EMAIL_QUEUE",
+    BOOKING_QUEUE: "BOOKING_QUEUE"
+}
