@@ -6,12 +6,15 @@ const { getChannel } = require("../utils/rabbitmq")
 const emailConsumer = async () => {
     try {
         const channel = await getChannel();
+        await channel.assertQueue(EMAIL_QUEUE, {durable: true})
+        await channel.prefetch(100)
         channel.consume(EMAIL_QUEUE, async (data) => {
             var message;
             message = { userGmail, subject, content } = JSON.parse(data.content.toString())
             try{
                 const info = await notificationService.postNotification(message)
                 logger.info(`[*] ${info.accepted} is stored in the DB successfully`)
+                await new Promise((resolve) => setInterval(resolve, 1000))
             }catch(error){
                 logger.error(error.message)
             }

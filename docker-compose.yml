@@ -1,16 +1,68 @@
-version: "3.2"
+version: '3.8'
+
 services:
   rabbitmq:
-    image: rabbitmq:3.8-management-alpine
-    container_name: 'rabbitmq'
+    image: rabbitmq:3-management
+    container_name: MQ-container
     ports:
-        - 5673:5672
-        - 15673:15672
+      - "15672:15672"
+      - "5672:5672"
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", 'status']
+      interval: 30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    restart: always
+    
+
+  app:
+    container_name: notification-service
+    build: .
+    ports:
+      - "3001:3001"
     volumes:
-        - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
-        - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
-    networks:
-        - rabbitmq_nodejs
-networks:
-  rabbitmq_nodejs:
-    driver: bridge
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    environment:
+      - PORT:3001
+      - GMAIL_APP_PASSWORD=${EMAIL_PASSWORD}
+      - GMAIL_APP_ADDRESS= ${EMAIl_ADDRESS}
+      - NODE_ENV:development
+      - USERNAME:root
+      - PASSWORD:${DB_PASSWORD}
+      - DATABASE:flights_development
+      - HOST:127.0.0.1
+      - DIALECT:mysql
+    depends_on:
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    restart: always
+        
+  
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-container
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - MYSQL_DATABASE=flights_development
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+    restart: always
+
+
+volumes:
+  mysql-data:

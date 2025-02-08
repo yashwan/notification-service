@@ -4,7 +4,7 @@ const { logger } = require("./nodeMailer")
 let rabbitmqConnection, channel
 const connection = async () => {
 try{
-    rabbitmqConnection = await amqp.connect("amqp://localhost")
+    rabbitmqConnection = await amqp.connect("amqp://MQ-container")
     channel = await rabbitmqConnection.createChannel()
     return channel
 }catch(error){
@@ -17,6 +17,7 @@ const getChannel = async () => {
         if(!channel){
             await connection()
         }
+
         return channel
     } catch (error) {
 
