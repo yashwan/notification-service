@@ -8,4 +8,4 @@ Send the notification service to the respected email if the email exists
 - Enforced input validation with Zod, ensuring payload integrity and preventing invalid data.
 - Enhanced system reliability with structured logging and error tracking using Winston.
 - Exposed RESTful APIs via Express.js, allowing external services to trigger notifications efficiently.
-- Optimised for high throughput, capable of processing up to 100 notifications per minute.
+- Optimised for high throughput, capable of processing up to 50 notifications per minute.
